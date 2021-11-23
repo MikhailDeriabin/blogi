@@ -5,16 +5,16 @@ const dbConfig = {
     host: "localhost",
     user: "user",
     password: "user",
-    database: "example_db"
+    database: "blog"
 };
 
-const makeQuery = async (sqlQuery , param) => {
+const makeQuery = async (sqlQuery , params) => {
     const con = mysql.createConnection(dbConfig);
     const query = util.promisify(con.query).bind(con);
 
     try {
-        if(param !== null && param !== undefined)
-            return await query(sqlQuery, param);
+        if(params !== null)
+            return await query(sqlQuery, params);
         else
             return await query(sqlQuery);
     } catch(err){
