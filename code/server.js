@@ -1,10 +1,13 @@
 const express = require('express');
 const path = require("path");
 
+const routes = require("./server_modules/routes");
+
 //For generating links in console
 const htmlFiles = ["login.html", "register.html"];
 
-const app = express();
+const app = express()
+routes.router(app);
 
 app.use(express.static(path.join(__dirname, "public")));
 
