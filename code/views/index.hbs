@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            {{#if user}}
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/auth/logout">Logout</a></li>
+            {{else}}
+                <li><a href="/register">Register</a></li>
+                <li><a href="/login">Login</a></li>
+            {{/if}}
+        </ul>
+    </nav>
+    <h1>Home page</h1>
+    <div id="container">
+        Welcome to the blog!
+    </div>
+</body>
+</html>

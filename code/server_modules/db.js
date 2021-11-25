@@ -2,10 +2,10 @@ const mysql = require("mysql");
 const util = require("util");
 
 const dbConfig = {
-    host: "localhost",
-    user: "user",
-    password: "user",
-    database: "blog"
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE
 };
 
 const makeQuery = async (sqlQuery , params) => {

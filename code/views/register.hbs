@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/register.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Register</h1>
+    <form action="/auth/register" method="POST">
+        <label>Login: <input id="login" name="login" type="text" placeholder="batman" required/></label><br/>
+        <label>Password: <input id="password" name="password" type="password" placeholder="your password" required/></label><br/>
+        <label>Name: <input id="name" name="name" type="text" placeholder="Steve Jobs"/></label><br/>
+        <button id="register" type="submit">Register me</button>
+    </form>
+    <div id="result">
+        {{# if message }}
+            <p>{{ message }}</p>
+        {{/ if }}
+    </div>
+</body>
+</html>

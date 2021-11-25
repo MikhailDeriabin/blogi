@@ -1,15 +1,26 @@
 const express = require('express');
 const path = require("path");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 
-const routes = require("./server_modules/routes");
+dotenv.config();
 
 //For generating links in console
-const htmlFiles = ["login.html", "register.html"];
+const htmlFiles = ["login", "register", "profile"];
 
 const app = express();
-routes.router(app);
 
+//make automatic routing
 app.use(express.static(path.join(__dirname, "public")));
+//For getting date of any form
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cookieParser());
+
+app.set("view engine", "hbs");
+
+app.use("/", require("./routes/pages"));
+app.use("/auth", require("./routes/auth"));
 
 app.listen(8081, () => {
     displayLinks();
@@ -18,6 +29,7 @@ app.listen(8081, () => {
 function displayLinks(){
     console.log();
     console.log("----------------------");
+    console.log("ROOT: http://localhost:8081/");
     for(let i=0; i<htmlFiles.length; i++){
         const name = htmlFiles[i].split(".")[0].toUpperCase();
         console.log(name + ": http://localhost:8081/" + htmlFiles[i]);
