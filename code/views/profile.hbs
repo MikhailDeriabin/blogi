@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+    <h1>Profile</h1>
+    <div id="container">
+        <h2>This is your profile</h2>
+        <p>Your name: {{user.name}}</p>
+        <p>Your login: {{user.login}}</p>
+    </div>
+</body>
+</html>
