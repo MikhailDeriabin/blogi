@@ -20,3 +20,12 @@ create table users_data(
      login varchar(30) not null,
      foreign key (login) references users(login)
 );
+
+create table posts(
+     id int not null auto_increment primary key,
+     name varchar(255) not null,
+     content text,
+     date timestamp not null default current_timestamp(),
+     login varchar(30) not null,
+     foreign key(login) references users(login)
+);
