@@ -1,6 +1,16 @@
 const db = require("../server_modules/db");
 
 exports.getUserData = async (req, res, next) => {
+    const selectQ = "SELECT * FROM users_data WHERE login = ?";
+    sendProfileData(req, next, selectQ);
+}
+
+exports.getUserPosts = async (req, res, next) => {
+    const selectQ = "SELECT * FROM posts WHERE login = ?";
+    sendProfileData(req, next, selectQ);
+}
+
+async function sendProfileData(req, next, selectQ) {
     try{
         const login = req.login;
 
@@ -15,9 +25,8 @@ exports.getUserData = async (req, res, next) => {
             const isUserExist = resp.length !== 0;
 
             if(isUserExist){
-                const selectAllQ = "SELECT * FROM users_data WHERE login = ?";
-                const result = await db.makeQuery(selectAllQ, login);
-                req.user = result[0];
+                const result = await db.makeQuery(selectQ, login);
+                req.result = result[0];
                 req.isInformation = true;
             } else {
                 console.log("User is not exist or login is wrong");

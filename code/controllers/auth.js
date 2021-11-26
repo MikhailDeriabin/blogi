@@ -98,7 +98,7 @@ exports.isLoggedIn = async (req, res, next) => {
 
                 //if user with that login(=id here) exists, save his data to the req obj
                 if(result){
-                    req.user = result[0];
+                    req.result = result[0];
                 } else{
                     console.log("No user found");
                 }
