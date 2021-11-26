@@ -21,6 +21,7 @@ app.set("view engine", "hbs");
 
 app.use("/", require("./routes/pages"));
 app.use("/auth", require("./routes/auth"));
+app.use("/profile", require("./routes/profile"));
 
 app.listen(8081, () => {
     displayLinks();

@@ -9,9 +9,13 @@
 <body>
     <h1>Register</h1>
     <form action="/auth/register" method="POST">
-        <label>Login: <input id="login" name="login" type="text" placeholder="batman" required/></label><br/>
-        <label>Password: <input id="password" name="password" type="password" placeholder="your password" required/></label><br/>
+        <label>Login: <input id="login" name="login" type="text" placeholder="batman" required/>*</label><br/>
+        <label>Password: <input id="password" name="password" type="password" placeholder="your password" required/>*</label><br/>
+
         <label>Name: <input id="name" name="name" type="text" placeholder="Steve Jobs"/></label><br/>
+        <label>Email: <input id="email" name="email" type="email" placeholder="example@mail.com"/></label><br/>
+        <label>Phone: <input id="phone" name="phone" type="text" placeholder="+358 89 334 09 56"/></label><br/>
+        <label>Hobbies: <input id="hobbies" name="hobbies" type="text" placeholder="Reading, walking"/></label><br/>
         <button id="register" type="submit">Register me</button>
     </form>
     <div id="result">
