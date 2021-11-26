@@ -7,18 +7,12 @@ const db = require("../server_modules/db");
 
 exports.register = async (req, res) => {
     try{
-        const login = req.body.login;
-        const password = req.body.password;
-        let name = req.body.name;
+        const {login, password, name, email, phone, hobbies} = req.body;
 
         if(!verifyNotNull([login, password])){
             return res.status(400).render("register", {
                 message: "Please fill all required fields"
             });
-        }
-
-        if(!name || name === ""){
-            name = "User";
         }
 
         const selectLoginQ = "SELECT login FROM users WHERE login = ?";
@@ -27,8 +21,10 @@ exports.register = async (req, res) => {
 
         if(!isUserExist){
             let hashedPassword = await bcrypt.hash(password, 8);
-            const insertUserQ = "INSERT INTO users (login, password, name) VALUES (?, ?, ?)";
-            db.makeQuery(insertUserQ, [login, hashedPassword, name]).then(() => {
+            const insertUserQ = "INSERT INTO users (login, password) VALUES (?, ?)";
+            db.makeQuery(insertUserQ, [login, hashedPassword]).then(() => {
+                const insertUserDataQ = "INSERT INTO users_data (name, email, phone, hobbies, login) VALUES (?, ?, ?, ?, ?)";
+                db.makeQuery(insertUserDataQ, [name, email, phone, hobbies, login]);
                 createAccessCookie(login, res);
                 return res.status(200).redirect("/profile");
             });
@@ -97,8 +93,8 @@ exports.isLoggedIn = async (req, res, next) => {
             const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
 
             try{
-                const selectAllQ = "SELECT * FROM users WHERE login = ?";
-                const result = await db.makeQuery(selectAllQ, decoded.id);
+                const selectNameQ = "SELECT name, login FROM users_data WHERE login = ?";
+                const result = await db.makeQuery(selectNameQ, decoded.id);
 
                 //if user with that login(=id here) exists, save his data to the req obj
                 if(result){
@@ -111,6 +107,20 @@ exports.isLoggedIn = async (req, res, next) => {
                 console.log(e);
             }
 
+        }catch(e){
+            console.log("Problems with getting cookie");
+            console.log(e);
+        }
+    }
+
+    next();
+}
+
+exports.getLogin = async (req, res, next) => {
+    if(req.cookies.jwt){
+        try{
+            const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+            req.login = decoded.id;
         }catch(e){
             console.log("Problems with getting cookie");
             console.log(e);
