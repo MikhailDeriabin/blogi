@@ -24,19 +24,30 @@ router.get("/information", authController.getLogin, profileController.getUserDat
     sendDataToClient(req, res);
 });
 
-router.get("/posts", authController.getLogin, profileController.getUserPosts, (req, res) => {
+router.get("/myposts", authController.getLogin, profileController.getUserPosts, (req, res) => {
     sendDataToClient(req, res);
 });
 
-function sendDataToClient(req, res) {
-    if(req.isInformation){
+router.post("/myposts", authController.isLoggedIn, profileController.createPost, (req, res) => {
+    if(req.logout){
+        res.redirect("/auth/logout");
+    } else{
         res.json({
-            isInformation: true,
+            isSuccess: req.isSuccess
+        });
+    }
+    res.end();
+});
+
+function sendDataToClient(req, res) {
+    if(req.isSuccess){
+        res.json({
+            isSuccess: true,
             result: req.result
         });
     } else{
         res.json({
-            isInformation: false
+            isSuccess: false
         });
     }
     res.end();
