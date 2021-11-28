@@ -8,10 +8,10 @@ router.get("/", authController.isLoggedIn, (req, res) => {
     //console.log(req.message);
 
     //if previous function passed data about user = user is logged in
-    const user = req.user;
-    if(user){
+    const result = req.result;
+    if(result){
         res.render("profile", {
-            user: user
+            result: result
         });
     } else{
         res.render("login", {
@@ -21,17 +21,36 @@ router.get("/", authController.isLoggedIn, (req, res) => {
 });
 
 router.get("/information", authController.getLogin, profileController.getUserData, (req, res) => {
-    if(req.isInformation){
-        res.json({
-            isInformation: true,
-            user: req.user
-        });
+    sendDataToClient(req, res);
+});
+
+router.get("/myposts", authController.getLogin, profileController.getUserPosts, (req, res) => {
+    sendDataToClient(req, res);
+});
+
+router.post("/myposts", authController.isLoggedIn, profileController.createPost, (req, res) => {
+    if(req.logout){
+        res.redirect("/auth/logout");
     } else{
         res.json({
-            isInformation: false
+            isSuccess: req.isSuccess
         });
     }
     res.end();
 });
+
+function sendDataToClient(req, res) {
+    if(req.isSuccess){
+        res.json({
+            isSuccess: true,
+            result: req.result
+        });
+    } else{
+        res.json({
+            isSuccess: false
+        });
+    }
+    res.end();
+}
 
 module.exports = router;
