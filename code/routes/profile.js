@@ -4,6 +4,7 @@ const profileController = require("../controllers/profile")
 
 const router = express.Router();
 
+//User profile entry point
 router.get("/", authController.isLoggedIn, (req, res) => {
     //console.log(req.message);
 
@@ -28,15 +29,30 @@ router.get("/myposts", authController.getLogin, profileController.getUserPosts, 
     sendDataToClient(req, res);
 });
 
+//User post CRUD
 router.post("/myposts", authController.isLoggedIn, profileController.createPost, (req, res) => {
-    if(req.logout){
-        res.redirect("/auth/logout");
-    } else{
-        res.json({
-            isSuccess: req.isSuccess
-        });
-    }
-    res.end();
+    sendQueryStatus(req, res);
+});
+
+router.get("/myposts/:id", authController.getLogin, profileController.getUserPost, (req, res) => {
+    sendDataToClient(req, res);
+});
+
+router.put("/myposts/:id", authController.isLoggedIn, profileController.updateUserPost, (req, res) => {
+    sendQueryStatus(req, res);
+});
+
+router.delete("/myposts/:id", authController.isLoggedIn, profileController.deleteUserPost, (req, res) => {
+    sendQueryStatus(req, res);
+});
+
+//User personal data CRUD (reading and updating only)
+router.get("/information/:property", authController.getLogin, profileController.getUserProperty, (req, res) => {
+    sendDataToClient(req, res);
+});
+
+router.put("/information/:property", authController.isLoggedIn, profileController.updateUserProperty, (req, res) => {
+    sendQueryStatus(req, res);
 });
 
 function sendDataToClient(req, res) {
@@ -48,6 +64,17 @@ function sendDataToClient(req, res) {
     } else{
         res.json({
             isSuccess: false
+        });
+    }
+    res.end();
+}
+
+function sendQueryStatus(req, res){
+    if(req.logout){
+        res.redirect("/auth/logout");
+    } else{
+        res.json({
+            isSuccess: req.isSuccess
         });
     }
     res.end();
