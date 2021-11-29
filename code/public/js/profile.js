@@ -2,6 +2,7 @@ const getUserDataBtn = document.querySelector("#getUserData");
 const getUserPostsBtn = document.querySelector("#getUserPosts");
 const writePostBtn = document.querySelector("#writePost");
 const userUIDiv = document.querySelector("#userUI");
+const makeRequestBtn = document.querySelector("#makeRequest");
 
 getUserDataBtn.addEventListener("click", async () => {
     const responseData = await getInformation("/profile/information");
@@ -25,9 +26,25 @@ writePostBtn.addEventListener("click", async () => {
     createNewPostForm();
 });
 
+makeRequestBtn.addEventListener("click", async () => {
+    //Examples of REST use:
+    //const resp = await getInformation("/profile/myposts/11"); 11 - post id
+
+    //const updateObj = {id: 11, name: "another change", content: "some new text"};
+    //const resp = await updateInformation("/profile/myposts/11", updateObj); 11 - post id
+
+    //const resp = await deletePost(11); 11 - post id
+
+    //const resp = await getInformation("/profile/information/name"); name - user property(name, email etc. see DB or registration form)
+
+    const updateObj = {value: "Andrew"};
+    const resp = await updateInformation("/profile/information/name", updateObj);
+    console.log(resp);
+});
+
 function createNewPostForm() {
     const form = document.createElement("form");
-    const nameLabel = createLabelInput("Name: ", "text", "name", "my awesome post", true);
+    const nameLabel = createLabelInput("Name: ", "text", "name", "my awesome post", false);
     const contentLabel = createLabelTextarea("", "content", 10, 70, "Content of your post", false);
     const submitBtn = document.createElement("button");
 
@@ -50,7 +67,7 @@ function createNewPostForm() {
         }
 
         //true = everything ok, false = something wrong(not saved to DB)
-        const responseData = await postInformation("/profile/myposts", dataObj);
+        const responseData = await createPost(dataObj);
         console.log(responseData.isSuccess);
 
         //TODO: inform user was post saved or not. It can be found from responseData.isSuccess, see console
@@ -93,12 +110,16 @@ async function getInformation(path) {
     const fetchOptions = {
         method: "GET"
     };
-
-    const res = await fetch(path, fetchOptions);
-    return await res.json();
+    try{
+        const res = await fetch(path, fetchOptions);
+        return await res.json();
+    }catch(e){
+        console.log(e);
+        return {};
+    }
 }
 
-async function postInformation(path, data) {
+async function createPost(data) {
     const fetchOptions = {
         method: "POST",
         headers: {
@@ -106,9 +127,42 @@ async function postInformation(path, data) {
         },
         body: JSON.stringify(data)
     };
-
-    const res = await fetch(path, fetchOptions);
     try{
+        const res = await fetch("/profile/myposts", fetchOptions);
+        return await res.json();
+    }
+    catch(e){
+        //if something wrong with cookies = probably user is not authorized
+        console.log(e);
+        window.location.href = "/login";
+    }
+}
+
+async function updateInformation(path, data) {
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    };
+    try{
+        const res = await fetch(path, fetchOptions);
+        return await res.json();
+    }
+    catch(e){
+        //if something wrong with cookies = probably user is not authorized
+        console.log(e);
+        window.location.href = "/login";
+    }
+}
+
+async function deletePost(id) {
+    const fetchOptions = {
+        method: "DELETE"
+    };
+    try{
+        const res = await fetch(`/profile/myposts/${id}`, fetchOptions);
         return await res.json();
     }
     catch(e){
