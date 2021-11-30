@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", authController.isLoggedIn, (req, res) => {
     res.render("index", {
         isLogged: true,
-        user: req.user
+        result: req.result
     });
 });
 

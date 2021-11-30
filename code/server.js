@@ -22,6 +22,7 @@ app.set("view engine", "hbs");
 app.use("/", require("./routes/pages"));
 app.use("/auth", require("./routes/auth"));
 app.use("/profile", require("./routes/profile"));
+app.use("/posts", require("./routes/posts"));
 
 app.listen(8081, () => {
     displayLinks();
@@ -30,7 +31,7 @@ app.listen(8081, () => {
 function displayLinks(){
     console.log();
     console.log("----------------------");
-    console.log("ROOT: http://localhost:8081/");
+    console.log("HOME: http://localhost:8081/");
     for(let i=0; i<htmlFiles.length; i++){
         const name = htmlFiles[i].split(".")[0].toUpperCase();
         console.log(name + ": http://localhost:8081/" + htmlFiles[i]);
