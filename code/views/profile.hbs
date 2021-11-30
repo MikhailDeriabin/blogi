@@ -9,13 +9,12 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/profile">Profile</a></li>
             <li><a href="/auth/logout">Logout</a></li>
         </ul>
     </nav>
     <h1>Profile</h1>
     <div id="container">
-        <h2>Welcome back {{result.name}}!</h2>
+        <h2>Welcome back{{#if result.name}} {{result.name}}{{/if}}!</h2>
         <button id="getUserData">Show my personal information</button>
         <button id="getUserPosts">Show my articles</button>
         <button id="writePost">Write new post</button>

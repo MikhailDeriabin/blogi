@@ -8,9 +8,8 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            {{#if user}}
-                <li><a href="/profile">Profile</a></li>
+            {{#if result}}
+                <li><a href="/profile">{{result.login}} profile</a></li>
                 <li><a href="/auth/logout">Logout</a></li>
             {{else}}
                 <li><a href="/register">Register</a></li>
@@ -20,7 +19,17 @@
     </nav>
     <h1>Home page</h1>
     <div id="container">
-        Welcome to the blog!
+        Welcome to the blog app{{#if result.name}}, {{result.name}}{{/if}}!
+
+        <div id="searchBox">
+            <label for="search">
+                Start your search here:
+                <input id="search" name="search" type="text" placeholder="Life of frogs" required/>
+                <button id="searchBtn">search</button>
+            </label>
+        </div>
     </div>
 </body>
+<script src="/js/modules/posts.js" type="module"></script>
+<script src="/js/index.js" type="module"></script>
 </html>
