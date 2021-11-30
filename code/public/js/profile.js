@@ -1,3 +1,6 @@
+import * as pPost from "./modules/profile_post.js";
+import * as pData from "./modules/profile_data.js";
+
 const getUserDataBtn = document.querySelector("#getUserData");
 const getUserPostsBtn = document.querySelector("#getUserPosts");
 const writePostBtn = document.querySelector("#writePost");
@@ -5,18 +8,16 @@ const userUIDiv = document.querySelector("#userUI");
 const makeRequestBtn = document.querySelector("#makeRequest");
 
 getUserDataBtn.addEventListener("click", async () => {
-    const responseData = await getInformation("/profile/information");
-    console.log(responseData.isSuccess); //true = success, false = some error on the server side
-    console.log(responseData.result);
+    const responseData = await pData.readAllData();
+    console.log(responseData);
 
     //TODO: display user information (it is in responseData variable) or inform about error (responseData.isSuccess)
 
 });
 
 getUserPostsBtn.addEventListener("click", async () => {
-    const responseData = await getInformation("/profile/myposts");
-    console.log(responseData.isSuccess); //true = success, false = some error on the server side
-    console.log(responseData.result);
+    const allPosts = await pPost.readAllPosts();
+    console.log(allPosts);
 
     //TODO: display user posts (it is in responseData variable) or inform about error (responseData.isSuccess)
 
@@ -27,18 +28,19 @@ writePostBtn.addEventListener("click", async () => {
 });
 
 makeRequestBtn.addEventListener("click", async () => {
-    //Examples of REST use:
-    //const resp = await getInformation("/profile/myposts/11"); 11 - post id
+    //CRUD examples:
+    //isSuccess field shows was operation successful or not,
+    //in case then server can not define user or he is not logged in user will be redirected to login page
 
-    //const updateObj = {id: 11, name: "another change", content: "some new text"};
-    //const resp = await updateInformation("/profile/myposts/11", updateObj); 11 - post id
+    //Posts:
+    //const resp = await pPost.createPost("my new post", "text text");
+    //const resp = await pPost.readPostById(12);
+    //const resp = await pPost.updatePostById(12, "some name", "some content");
+    //const resp = await pPost.deletePostById(12);
 
-    //const resp = await deletePost(11); 11 - post id
-
-    //const resp = await getInformation("/profile/information/name"); name - user property(name, email etc. see DB or registration form)
-
-    const updateObj = {value: "Andrew"};
-    const resp = await updateInformation("/profile/information/name", updateObj);
+    //User personal data:
+    //const resp = await pData.readPropertyByName("email");
+    const resp = await pData.updatePropertyByName("email", "batman1@gmail.com")
     console.log(resp);
 });
 
@@ -61,13 +63,9 @@ function createNewPostForm() {
         evt.preventDefault();
         const postName = form.querySelector("input[type='text']").value;
         const postContent = form.querySelector("textarea").value;
-        const dataObj = {
-            name: postName,
-            content: postContent
-        }
 
         //true = everything ok, false = something wrong(not saved to DB)
-        const responseData = await createPost(dataObj);
+        const responseData = await pPost.createPost(postName, postContent);
         console.log(responseData.isSuccess);
 
         //TODO: inform user was post saved or not. It can be found from responseData.isSuccess, see console
@@ -104,70 +102,4 @@ function createLabelInput(txt, type, name, placeholder, isRequired) {
     label.textContent = txt;
     label.appendChild(input);
     return label;
-}
-
-async function getInformation(path) {
-    const fetchOptions = {
-        method: "GET"
-    };
-    try{
-        const res = await fetch(path, fetchOptions);
-        return await res.json();
-    }catch(e){
-        console.log(e);
-        return {};
-    }
-}
-
-async function createPost(data) {
-    const fetchOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    };
-    try{
-        const res = await fetch("/profile/myposts", fetchOptions);
-        return await res.json();
-    }
-    catch(e){
-        //if something wrong with cookies = probably user is not authorized
-        console.log(e);
-        window.location.href = "/login";
-    }
-}
-
-async function updateInformation(path, data) {
-    const fetchOptions = {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    };
-    try{
-        const res = await fetch(path, fetchOptions);
-        return await res.json();
-    }
-    catch(e){
-        //if something wrong with cookies = probably user is not authorized
-        console.log(e);
-        window.location.href = "/login";
-    }
-}
-
-async function deletePost(id) {
-    const fetchOptions = {
-        method: "DELETE"
-    };
-    try{
-        const res = await fetch(`/profile/myposts/${id}`, fetchOptions);
-        return await res.json();
-    }
-    catch(e){
-        //if something wrong with cookies = probably user is not authorized
-        console.log(e);
-        window.location.href = "/login";
-    }
 }
