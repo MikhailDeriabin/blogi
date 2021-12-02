@@ -2,6 +2,14 @@ function profile_post(){}
 
 const noSuccessObj = { isSuccess: false };
 
+/**
+ * Create and save new post to the database and returns operation status
+ * Operation status isSuccess is true if query was successful, user is logged in and no problems with Internet or database connection was occurred, if it is false the opposite
+ * If right parameters was not provided operation status will be also false
+ * @param name {string} name of the new post
+ * @param content {string} content of the new post
+ * @returns Promise with object with status of operation
+ */
 async function createPost(name, content) {
     if(name){
         content = content ? content : "";
@@ -24,10 +32,21 @@ async function createPost(name, content) {
     }
 }
 
+/**
+ * Read all user posts, returns it as object with results array and operation status isSuccess
+ * Operation status is true if query was successful, user is logged in and no problems with Internet or database connection was occurred, if it is false the opposite
+ * @returns Promise with object with operation status and result array or only operation status if right parameter was not provided
+ */
 async function readAllPosts(){
     return await getInformation("/profile/myposts");
 }
 
+/**
+ * Read post with specific id, returns it as object with operation status isSuccess
+ * Operation status is true if query was successful, user is logged in and no problems with Internet or database connection was occurred, if it is false the opposite
+ * @param id {int} id number of the post
+ * @returns Promise with object with operation status and result object or only operation status if right parameter was not provided
+ */
 async function readPostById(id){
     if(Number.isInteger(id)){
         return await getInformation(`/profile/myposts/${id}`);
@@ -37,6 +56,14 @@ async function readPostById(id){
     }
 }
 
+/**
+ * Update post with specific id, returns object with operation status isSuccess
+ * Operation status is true if query was successful, user is logged in and no problems with Internet or database connection was occurred, if it is false the opposite
+ * @param id {int} id number of the post
+ * @param name {string} new name of the post
+ * @param content {string} new content of the post
+ * @returns Promise with object with status of operation
+ */
 async function updatePostById(id, name, content) {
     if(Number.isInteger(id) && name){
         content = content ? content : "";
@@ -60,6 +87,12 @@ async function updatePostById(id, name, content) {
     return noSuccessObj;
 }
 
+/**
+ * Delete post with specific id, returns object with operation status isSuccess
+ * Operation status is true if query was successful, user is logged in and no problems with Internet or database connection was occurred, if it is false the opposite
+ * @param id {int} id number of the post
+ * @returns Promise with object with status of operation
+ */
 async function deletePostById(id) {
     if(Number.isInteger(id)){
         const fetchOptions = {
