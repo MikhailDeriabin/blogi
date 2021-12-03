@@ -1,86 +1,91 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { promisify } = require("util");
+const { validationResult } = require("express-validator");
 
 const db = require("../server_modules/db");
 
 
 exports.register = async (req, res) => {
-    try{
-        const {login, password, name, email, phone, hobbies} = req.body;
+    const errors = validationResult(req);
+    if(errors.isEmpty()){
+        try{
+            const {login, password, name, email, phone, hobbies} = req.body;
 
-        if(!verifyNotNull([login, password])){
-            return res.status(400).render("register", {
-                message: "Please fill all required fields"
-            });
-        }
+            const selectLoginQ = "SELECT login FROM users WHERE login = ?";
+            const resp = await db.makeQuery(selectLoginQ, login);
+            const isUserExist = resp.length !== 0;
 
-        const selectLoginQ = "SELECT login FROM users WHERE login = ?";
-        const resp = await db.makeQuery(selectLoginQ, login);
-        const isUserExist = resp.length !== 0;
-
-        if(!isUserExist){
-            let hashedPassword = await bcrypt.hash(password, 8);
-            const insertUserQ = "INSERT INTO users (login, password) VALUES (?, ?)";
-            db.makeQuery(insertUserQ, [login, hashedPassword]).then(() => {
-                const insertUserDataQ = "INSERT INTO users_data (name, email, phone, hobbies, login) VALUES (?, ?, ?, ?, ?)";
-                db.makeQuery(insertUserDataQ, [name, email, phone, hobbies, login]);
-                createAccessCookie(login, res);
-                return res.status(200).redirect("/profile");
-            });
-        } else {
+            if(!isUserExist){
+                let hashedPassword = await bcrypt.hash(password, 8);
+                const insertUserQ = "INSERT INTO users (login, password) VALUES (?, ?)";
+                db.makeQuery(insertUserQ, [login, hashedPassword]).then(() => {
+                    const insertUserDataQ = "INSERT INTO users_data (name, email, phone, hobbies, login) VALUES (?, ?, ?, ?, ?)";
+                    db.makeQuery(insertUserDataQ, [name, email, phone, hobbies, login]);
+                    createAccessCookie(login, res);
+                    return res.status(200).redirect("/profile");
+                });
+            } else {
+                return res.render("register", {
+                    message: "That login is already taken"
+                });
+            }
+        } catch (e){
+            console.log("No connection to the DB or problems with query");
             return res.render("register", {
-                message: "That login is already taken"
+                message: "Problems with connection"
             });
         }
-    } catch (e){
-        console.log("No connection to the DB or problems with query");
-        return res.render("register", {
-            message: "Problems with connection"
+    } else{
+        return res.status(422).render("register", {
+            errors: errors.array()
         });
     }
+
 }
 
 exports.login = async (req, res) => {
-    try{
-        const login = req.body.login;
-        const password = req.body.password;
+    const errors = validationResult(req);
+    if(errors.isEmpty()){
+        try{
+            const login = req.body.login;
+            const password = req.body.password;
 
-        if(!verifyNotNull([login, password])){
-            return res.status(400).render("login", {
-                message: "Please fill all required fields"
-            });
-        }
+            const selectLoginQ = "SELECT login FROM users WHERE login = ?";
+            const resp = await db.makeQuery(selectLoginQ, login);
+            const isUserExist = resp.length !== 0;
 
-        const selectLoginQ = "SELECT login FROM users WHERE login = ?";
-        const resp = await db.makeQuery(selectLoginQ, login);
-        const isUserExist = resp.length !== 0;
+            if(isUserExist){
+                const selectUserQ = "SELECT * FROM users WHERE login = ?";
+                const resp = await db.makeQuery(selectUserQ, login);
 
-        if(isUserExist){
-            const selectUserQ = "SELECT * FROM users WHERE login = ?";
-            const resp = await db.makeQuery(selectUserQ, login);
-
-            if(!resp || !(await bcrypt.compare(password, resp[0].password))){
-                return res.status(401).render("login", {
-                    message: "Password is wrong"
+                if(!resp || !(await bcrypt.compare(password, resp[0].password))){
+                    return res.status(401).render("login", {
+                        message: "Password is wrong"
+                    });
+                } else{
+                    const id = resp[0].login;
+                    createAccessCookie(id, res);
+                    res.status(200).redirect("/profile");
+                }
+            } else {
+                return res.render("login", {
+                    message: "User with this login does not exists"
                 });
-            } else{
-                const id = resp[0].login;
-                createAccessCookie(id, res);
-                res.status(200).redirect("/profile");
             }
-        } else {
+        } catch (e){
+            console.log("No connection to the DB or problems with query");
+            console.log(e);
             return res.render("login", {
-                message: "User with this login does not exists"
+                message: "Problems with connection"
             });
         }
-    } catch (e){
-        console.log("No connection to the DB or problems with query");
-        console.log(e);
+    } else{
         return res.render("login", {
-            message: "Problems with connection"
+            errors: errors.array()
         });
     }
+
 }
 
 exports.isLoggedIn = async (req, res, next) => {
@@ -138,14 +143,6 @@ exports.logout = (req, res) => {
     });
 
     res.status(200).redirect("/");
-}
-
-function verifyNotNull(strings){
-    for(let i=0; i< strings.length; i++){
-        if(!strings[i])
-            return false;
-    }
-    return true;
 }
 
 function createAccessCookie(id, res) {

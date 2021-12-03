@@ -67,7 +67,7 @@ async function readPostById(id){
 async function updatePostById(id, name, content) {
     if(Number.isInteger(id) && name){
         content = content ? content : "";
-        const data = {id: id, name: name, content: content};
+        const data = {name: name, content: content};
 
         const fetchOptions = generateFetchObj("PUT", data);
 

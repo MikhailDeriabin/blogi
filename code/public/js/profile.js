@@ -34,13 +34,13 @@ makeRequestBtn.addEventListener("click", async () => {
 
     //Posts:
     //const resp = await pPost.createPost("my new post", "text text");
-    //const resp = await pPost.readPostById(12);
+    //const resp = await pPost.readPostById(13);
     //const resp = await pPost.updatePostById(12, "some name", "some content");
     //const resp = await pPost.deletePostById(12);
 
     //User personal data:
     //const resp = await pData.readPropertyByName("email");
-    const resp = await pData.updatePropertyByName("email", "batman1@gmail.com")
+    const resp = await pData.updatePropertyByName("email", "batman1@gmail.com");
     console.log(resp);
 });
 
@@ -66,7 +66,7 @@ function createNewPostForm() {
 
         //true = everything ok, false = something wrong(not saved to DB)
         const responseData = await pPost.createPost(postName, postContent);
-        console.log(responseData.isSuccess);
+        console.log(responseData);
 
         //TODO: inform user was post saved or not. It can be found from responseData.isSuccess, see console
 
