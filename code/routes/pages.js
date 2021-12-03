@@ -5,10 +5,17 @@ const authController = require("../controllers/auth");
 const router = express.Router();
 
 router.get("/", authController.isLoggedIn, (req, res) => {
-    res.render("index", {
-        isLogged: true,
-        result: req.result
-    });
+    if(req.result){
+        res.render("index", {
+            isLogged: true,
+            result: req.result
+        });
+    } else {
+        res.render("index", {
+            isLogged: false
+        });
+    }
+
 });
 
 router.get("/register", (req, res) => {

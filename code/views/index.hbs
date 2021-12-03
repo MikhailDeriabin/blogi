@@ -8,7 +8,7 @@
 <body>
     <nav>
         <ul>
-            {{#if result}}
+            {{#if isLogged}}
                 <li><a href="/profile">{{result.login}} profile</a></li>
                 <li><a href="/auth/logout">Logout</a></li>
             {{else}}
@@ -19,7 +19,7 @@
     </nav>
     <h1>Home page</h1>
     <div id="container">
-        Welcome to the blog app{{#if result.name}}, {{result.name}}{{/if}}!
+        Welcome to the Blogi app{{#if result.name}}, {{result.name}}{{/if}}!
 
         <div id="searchBox">
             <label for="search">

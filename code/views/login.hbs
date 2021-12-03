@@ -22,6 +22,11 @@
     {{# if message }}
         <p>{{ message }}</p>
     {{/ if }}
+    {{# if errors }}
+        {{#each errors}}
+            <p>{{ this.msg }}</p>
+        {{/each}}
+    {{/if }}
 </div>
 </body>
 </html>
