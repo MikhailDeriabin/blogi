@@ -1,16 +1,43 @@
 const db = require("../server_modules/db");
 const {validationResult} = require("express-validator");
 
+/**
+ * Function passes forward to next callback function in request object (request.result key) all user personal information as name, email, phone etc.
+ * Also function passes forward isSuccess(boolean) value, which is status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.getUserData = async (req, res, next) => {
     const selectQ = "SELECT * FROM users_data WHERE login = ?";
     sendProfileData(req, next, selectQ);
 }
 
+/**
+ * Function passes forward to next callback function in request object (request.result key) all user created posts.
+ * Also function passes forward isSuccess(boolean) value, which is status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.getUserPosts = async (req, res, next) => {
     const selectQ = "SELECT * FROM posts WHERE login = ?";
     sendProfileData(req, next, selectQ);
 }
 
+/**
+ * Function creates new post and save it to the database.
+ * Also function passes forward in request object isSuccess(boolean) value, which is a status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.createPost = async (req, res, next) => {
     const errors = validationResult(req);
     if(errors.isEmpty()){
@@ -35,6 +62,16 @@ exports.createPost = async (req, res, next) => {
     next();
 }
 
+/**
+ * Function gets post with specific id and passes forward to next callback function in request object (request.result key).
+ * Id must be provided in request params.
+ * Also function passes forward in request object isSuccess(boolean) value, which is a status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.getUserPost = (req, res, next) => {
     const errors = validationResult(req);
     if(errors.isEmpty()){
@@ -46,6 +83,16 @@ exports.getUserPost = (req, res, next) => {
     }
 }
 
+/**
+ * Function updates post with specific id.
+ * Id must be provided in request params.
+ * Also function passes forward isSuccess(boolean) value, which is a status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.updateUserPost = async (req, res, next) => {
     const errors = validationResult(req);
     if(errors.isEmpty()){
@@ -71,6 +118,16 @@ exports.updateUserPost = async (req, res, next) => {
     next();
 }
 
+/**
+ * Function deletes post with specific id.
+ * Id must be provided in request params.
+ * Also function passes forward isSuccess(boolean) value, which is a status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.deleteUserPost = (req, res, next) => {
     const errors = validationResult(req);
     if(errors.isEmpty()){
@@ -95,6 +152,16 @@ exports.deleteUserPost = (req, res, next) => {
     next();
 }
 
+/**
+ * Function gets queried user personal information(name, email etc.) and passes forward to the next callback function in request object (request.result key).
+ * Information name must be provided in request params.
+ * Also function passes forward isSuccess(boolean) value, which is a status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.getUserProperty = (req, res, next) => {
     const errors = validationResult(req);
     if(errors.isEmpty()){
@@ -106,6 +173,16 @@ exports.getUserProperty = (req, res, next) => {
     }
 }
 
+/**
+ * Function updates queried user personal information(name, email etc.).
+ * Information name must be provided in request params.
+ * Also function passes forward to the next callback function in request object isSuccess(boolean) value, which is a status of the operation.
+ * Function prints helpful hints to server console in case of errors.
+ * @param req request object from the previous function
+ * @param res response object from the previous function
+ * @param next next function for passing data forward
+ * @returns {Promise<void>}
+ */
 exports.updateUserProperty = async (req, res, next) => {
     const errors = validationResult(req);
     if(errors.isEmpty()){

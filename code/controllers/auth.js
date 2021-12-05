@@ -7,12 +7,12 @@ const db = require("../server_modules/db");
 
 
 /**
- * Function registers new user to the users and users_data databases
- * It requires at least login and password fields, which must be sent in request's body as object: {login: "user login", password: "user password"}
- * As optional parameters can be added also name, email, phone and hobbies
- * All data must be string-type
- * Function also print helpful hints to server console in case of problems
- * If everything was ok, user will be redirected to the profile page, if not error message will be displayed under registration form in browser
+ * Function registers new user to the users and users_data databases.
+ * It requires at least login and password fields, which must be sent in request's body as object: {login: "user login", password: "user password"}.
+ * As optional parameters can be added also name, email, phone and hobbies.
+ * All data must be string-type.
+ * Function also prints helpful hints to server console in case of problems.
+ * If everything was ok, user will be redirected to the profile page, if not error message will be displayed under registration form in browser.
  * @param req request object from the previous function
  * @param res response object from the previous function
  * @returns {Promise} nothing if succeed or error message
@@ -56,11 +56,11 @@ exports.register = async (req, res) => {
 }
 
 /**
- * Function logs in user by creating jwt token and saving it to cookies
- * It requires login and password fields, which must be sent in request's body as object: {login: "user login", password: "user password"}
- * All data must be string-type
- * Function also print helpful hints to server console in case of problems
- * If everything was ok, user will be redirected to the profile page, if not error message will be displayed under registration form in browser
+ * Function logs in user by creating jwt token and saving it to cookies.
+ * It requires login and password fields, which must be sent in request's body as object: {login: "user login", password: "user password"}.
+ * All data must be string-type.
+ * Function also prints helpful hints to server console in case of problems.
+ * If everything was ok, user will be redirected to the profile page, if not error message will be displayed under registration form in browser.
  * @param req request object from the previous function
  * @param res response object from the previous function
  * @returns {Promise} nothing if succeed or error message
@@ -110,13 +110,13 @@ exports.login = async (req, res) => {
 }
 
 /**
- * Function checks is user logged in by examining cookie
- * In case then user wiped all cookies, this function will return error
- * Function also print helpful hints to server console in case of problems
+ * Function checks is user logged in by examining cookie.
+ * In case then user wiped all cookies, this function will return error.
+ * Function also prints helpful hints to server console in case of problems.
  * @param req request object from the previous function
  * @param res response object from the previous function
  * @param next next function for passing data forward
- * @returns {Promise} user's information as his name, email etc or nothing in case of error
+ * @returns {Promise} user's information as his name, email etc. or nothing in case of error
  */
 exports.isLoggedIn = async (req, res, next) => {
     //req.message = "Inside middleware";
@@ -152,9 +152,9 @@ exports.isLoggedIn = async (req, res, next) => {
 }
 
 /**
- * Function returns user login in case if he is logged in
- * In case then user wiped all cookies, this function will return error
- * Function also print helpful hints to server console in case of problems
+ * Function returns user login in case if he is logged in.
+ * In case then user wiped all cookies, this function will return error.
+ * Function also prints helpful hints to server console in case of problems.
  * @param req request object from the previous function
  * @param res response object from the previous function
  * @param next next function for passing data forward
@@ -175,7 +175,7 @@ exports.getLogin = async (req, res, next) => {
 }
 
 /**
- * Function logs out user and redirects to him to home page
+ * Function logs out user and redirects to him to home page.
  * @param req request object from the previous function
  * @param res response object from the previous function
  * @returns {Promise} nothing
